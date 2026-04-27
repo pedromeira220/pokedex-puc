@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pokemon_app/pokemon.dart';
 import 'package:pokemon_app/pokemon_card.dart';
 import 'package:pokemon_app/stat_bar.dart';
@@ -7,8 +8,9 @@ import 'package:pokemon_app/move_list.dart';
 
 class PokemonScreen extends StatefulWidget {
   final Pokemon pokemon;
+  final String docId;
 
-  const PokemonScreen({super.key, required this.pokemon});
+  const PokemonScreen({super.key, required this.pokemon, required this.docId});
 
   @override
   State<PokemonScreen> createState() => _PokemonScreenState();
@@ -58,7 +60,14 @@ class _PokemonScreenState extends State<PokemonScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context, currentLevel),
+                  onPressed: () async {
+                    final navigator = Navigator.of(context);
+                    await FirebaseFirestore.instance
+                        .collection('pokemons')
+                        .doc(widget.docId)
+                        .update({'level': currentLevel});
+                    navigator.pop();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.indigo,
                     foregroundColor: Colors.white,

@@ -53,11 +53,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'COLE_SEU_API_KEY_AQUI',
-    appId: 'COLE_SEU_APP_ID_AQUI',
-    messagingSenderId: 'COLE_SEU_MESSAGING_SENDER_ID_AQUI',
-    projectId: 'COLE_SEU_PROJECT_ID_AQUI',
-    authDomain: 'COLE_SEU_PROJECT_ID_AQUI.firebaseapp.com',
-    storageBucket: 'COLE_SEU_PROJECT_ID_AQUI.firebasestorage.app',
+    apiKey: "AIzaSyDLmndRucYKsfHHWwoEUtIIo1zozj4BN8M",
+    appId: "1:150956996670:web:b26687bfd0a4e96049f96f",
+    messagingSenderId: "150956996670",
+    projectId: "pokedex-puc",
+    authDomain: "pokedex-puc.firebaseapp.com",
+    storageBucket: "pokedex-puc.firebasestorage.app",
   );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'pokemon.dart';
 import 'pokemon_screen.dart';
 
@@ -10,29 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final pokemons = [
-    Pokemon(
-      name: 'Gengar',
-      spriteId: 94,
-      typeIds: [8, 4],
-      level: 42,
-      moves: ['Hypnosis', 'Dream Eater', 'Shadow Ball', 'Lick'],
-    ),
-    Pokemon(
-      name: 'Charizard',
-      spriteId: 6,
-      typeIds: [10, 3],
-      level: 38,
-      moves: ['Flamethrower', 'Fly', 'Slash', 'Dragon Rage'],
-    ),
-    Pokemon(
-      name: 'Pikachu',
-      spriteId: 25,
-      typeIds: [13],
-      level: 25,
-      moves: ['Thunderbolt', 'Quick Attack', 'Iron Tail', 'Volt Tackle'],
-    ),
-  ];
+  final collection = FirebaseFirestore.instance.collection('pokemons');
 
   @override
   Widget build(BuildContext context) {
@@ -42,34 +21,51 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
-      body: ListView.builder(
-        itemCount: pokemons.length,
-        itemBuilder: (context, index) {
-          final pokemon = pokemons[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(pokemon.spriteUrl),
-                backgroundColor: Colors.transparent,
-              ),
-              title: Text(pokemon.name),
-              subtitle: Text('Level ${pokemon.level}'),
-              onTap: () async {
-                final novoNivel = await Navigator.push<int>(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => PokemonScreen(pokemon: pokemon),
+      body: StreamBuilder(
+        stream: collection.snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final docs = snapshot.data!.docs;
+          return ListView.builder(
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              final data = docs[index].data() as Map;
+              final docId = docs[index].id;
+              final pokemon = Pokemon(
+                name: data['name'] as String,
+                spriteId: int.parse(data['spriteId'].toString()),
+                level: int.parse(data['level'].toString()),
+                typeIds: List<int>.from((data['typeIds'] ?? []).map((e) => int.parse(e.toString()))),
+                moves: List<String>.from(data['moves'] ?? []),
+              );
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(pokemon.spriteUrl),
+                    backgroundColor: Colors.transparent,
                   ),
-                );
-
-                if (novoNivel != null) {
-                  setState(() {
-                    pokemon.level = novoNivel;
-                  });
-                }
-              },
-            ),
+                  title: Text(pokemon.name),
+                  subtitle: Text('Level ${pokemon.level}'),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () async {
+                      await collection.doc(docId).delete();
+                    },
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PokemonScreen(pokemon: pokemon, docId: docId),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
           );
         },
       ),
