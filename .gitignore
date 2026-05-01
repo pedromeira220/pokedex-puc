@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase configuration with real credentials (use firebase_options.example.dart as template)
+lib/firebase_options.dart
