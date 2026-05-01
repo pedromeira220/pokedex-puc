@@ -38,7 +38,7 @@ class _PokemonScreenState extends State<PokemonScreen> {
               PokemonCard(
                 pokemonName: widget.pokemon.name,
                 spriteUrl: widget.pokemon.spriteUrl,
-                typeIds: widget.pokemon.typeIds,
+                typeNames: widget.pokemon.typeNames,
               ),
               const SizedBox(height: 16),
               SizedBox(

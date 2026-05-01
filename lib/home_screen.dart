@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 name: data['name'] as String,
                 spriteId: int.parse(data['spriteId'].toString()),
                 level: int.parse(data['level'].toString()),
-                typeIds: List<int>.from((data['typeIds'] ?? []).map((e) => int.parse(e.toString()))),
+                types: List<String>.from(data['types'] ?? []),
                 moves: List<String>.from(data['moves'] ?? []),
               );
               return Card(
@@ -48,7 +48,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundColor: Colors.transparent,
                   ),
                   title: Text(pokemon.name),
-                  subtitle: Text('Level ${pokemon.level}'),
+                  subtitle: Text(
+                    '${pokemon.typeNames.join(' · ')} — Lv ${pokemon.level}',
+                  ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () async {
