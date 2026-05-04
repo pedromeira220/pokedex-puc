@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'pokemon.dart';
 import 'pokemon_screen.dart';
+import 'new_pokemon_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +21,15 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('My Pokémon'),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.indigo,
+        foregroundColor: Colors.white,
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const NewPokemonScreen()),
+        ),
+        child: const Icon(Icons.add),
       ),
       body: StreamBuilder(
         stream: collection.snapshots(),
